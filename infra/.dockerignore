@@ -1,0 +1,46 @@
+# ==============================================================
+# .dockerignore — Back-end (project root)
+# Keeps the Docker build context lean and fast
+# ==============================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Maven build output (re-built inside Docker)
+target/
+
+# IDE / editor files
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files (not needed inside the image)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Environment & secrets (NEVER send to build context)
+.env
+.env.*
+!.env.example
+
+# Documentation
+*.md
+docs/
+
+# Frontend (built separately by its own Dockerfile)
+frontend/
+
+# Test reports / coverage
+**/surefire-reports/
+**/jacoco.exec

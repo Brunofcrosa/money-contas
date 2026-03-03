@@ -1,0 +1,17 @@
+node_modules/
+dist/
+/target/
+.angular/
+.idea/
+.vscode/
+*.log
+.env
+temp/
+tmp/
+coverage/
+backend/target/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+compile_errors.log
+strip_comments.js

@@ -1,0 +1,296 @@
+<!-- ══════════════════════════════════════════════════════════════
+     DASHBOARD COMPONENT — Full-screen financial dashboard
+     ══════════════════════════════════════════════════════════════ -->
+
+<!-- ── 1. STICKY HEADER ──────────────────────────────────────────── -->
+<header class="header">
+    <div class="header__left">
+        <div class="header__greeting">
+            <span class="greeting-text">{{ greeting() }}, <strong>{{ userName() }}</strong></span>
+            <span class="greeting-date">{{ todayFormatted() }}</span>
+        </div>
+    </div>
+
+    <!-- Month Picker -->
+    <div class="flex items-center gap-4 bg-surface-card rounded-2xl px-4 py-2 border border-surface-border shadow-sm">
+        <button class="p-1.5 text-slate-400 hover:text-primary-500 hover:bg-primary-50 rounded-lg transition-colors"
+            (click)="prevMonth()" title="Mês anterior">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <div class="flex items-center gap-1.5 min-w-max">
+            <div class="relative">
+                <select
+                    class="appearance-none bg-primary-50 text-primary-700 font-semibold rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-300 cursor-pointer shadow-[0_2px_10px_-3px_rgba(219,39,119,0.3)] transition-all hover:bg-primary-100"
+                    [title]="'Selecionar Mês'" (change)="onMonthSelect($event)">
+                    @for (m of monthsList; track m.value) {
+                    <option [value]="m.value" [selected]="m.value === currentMonthIndex()">
+                        {{ m.label }}
+                    </option>
+                    }
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="relative">
+                <select
+                    class="appearance-none bg-primary-50 text-primary-700 font-semibold rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-300 cursor-pointer shadow-[0_2px_10px_-3px_rgba(219,39,119,0.3)] transition-all hover:bg-primary-100"
+                    [title]="'Selecionar Ano'" (change)="onYearSelect($event)">
+                    @for (y of availableYears; track y) {
+                    <option [value]="y" [selected]="y === currentYear()">
+                        {{ y }}
+                    </option>
+                    }
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <button class="p-1.5 text-slate-400 hover:text-primary-500 hover:bg-primary-50 rounded-lg transition-colors"
+            (click)="nextMonth()" title="Próximo mês">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    </div>
+    <div class="header__right">
+        <div class="avatar" [attr.aria-label]="userName()">{{ userInitial() }}</div>
+        <button class="btn-icon btn-logout" (click)="onLogout()" title="Sair" id="btn-logout">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+        </button>
+    </div>
+</header>
+
+<!-- ── 2. MAIN CONTENT ────────────────────────────────────────────── -->
+<main class="dashboard">
+
+    <!-- ── 2a. HERO — Saldo Total ────────────────────────────────── -->
+    <section
+        class="hero-card relative overflow-hidden rounded-3xl p-6 lg:p-8 bg-gradient-to-br from-primary-600 to-rose-400 text-white shadow-xl mb-8">
+        <div class="hero-card__before absolute inset-0 bg-white/5 opacity-0 transition-opacity"></div>
+        <div
+            class="hero-card__content relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="flex-1">
+                <div class="hero-card__label text-primary-100 text-sm font-medium mb-1 uppercase tracking-wider">Saldo
+                    Guardado</div>
+                <div class="hero-card__value text-4xl lg:text-5xl font-bold tracking-tight mb-4" id="hero-total">
+                    {{ formatCurrency(currentBalance()) }}
+                </div>
+                <button
+                    class="px-5 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition flex items-center gap-2 shadow-lg shadow-green-500/30"
+                    (click)="openModal('INCOME')">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Recebi Dinheiro
+                </button>
+            </div>
+
+            <div class="hero-card__subinfo grid grid-cols-2 gap-x-8 gap-y-4 md:gap-y-2 mt-4 md:mt-0">
+                <div class="hero-subinfo-item flex items-center gap-3">
+                    <div class="p-2 bg-green-500/20 rounded-lg text-green-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-primary-100 font-medium tracking-wide">Entradas (Mês)</span>
+                        <span class="text-lg font-semibold">{{ formatCurrency(monthIncome()) }}</span>
+                    </div>
+                </div>
+
+                <div class="hero-subinfo-item flex items-center gap-3">
+                    <div class="p-2 bg-red-500/20 rounded-lg text-red-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-primary-100 font-medium tracking-wide">Saídas (Mês)</span>
+                        <span class="text-lg font-semibold">{{ formatCurrency(totalExpenses()) }}</span>
+                    </div>
+                </div>
+
+                <div class="hero-subinfo-item flex items-center gap-3">
+                    <div class="p-2 bg-blue-500/20 rounded-lg text-blue-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="2" y="5" width="20" height="14" rx="2" stroke-width="2" />
+                            <line x1="2" y1="10" x2="22" y2="10" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-primary-100 font-medium tracking-wide">Cartão de Crédito</span>
+                        <span class="text-lg font-semibold">{{ formatCurrency(monthCredit()) }}</span>
+                    </div>
+                </div>
+
+                <div class="hero-subinfo-item flex items-center gap-3">
+                    <div class="p-2 bg-purple-500/20 rounded-lg text-purple-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-primary-100 font-medium tracking-wide">Débito / Pix</span>
+                        <span class="text-lg font-semibold">{{ formatCurrency(monthDebit()) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Decorative SVG -->
+        <div class="hero-card__deco" aria-hidden="true">
+            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="56" stroke="rgba(255,255,255,0.15)" stroke-width="8" />
+                <circle cx="60" cy="60" r="36" stroke="rgba(255,255,255,0.1)" stroke-width="8" />
+                <path d="M60 20 L60 100 M20 60 L100 60" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- ── 2b. LOADING STATE ─────────────────────────────────────── -->
+    @if (isLoading()) {
+    <div class="loading-bar">
+        <div class="loading-bar__fill"></div>
+    </div>
+    }
+
+    <!-- ── 2c. CATEGORY CARDS GRID ──────────────────────────────── -->
+    <section class="section">
+        <h2 class="section-title">Por Categoria</h2>
+        <div class="categories-grid">
+            @for (cat of categories; track cat) {
+            <app-summary-card [category]="cat" [total]="categoryTotals()[cat] || 0" [count]="getCategoryCount(cat)"
+                [isSelected]="selectedCategory() === cat" (categoryClicked)="onCategorySelected($event)" />
+            }
+        </div>
+    </section>
+
+    <!-- ── 2d. CHART + TRANSACTION LIST ─────────────────────────── -->
+    <section class="chart-list-grid">
+
+        <!-- Doughnut Chart -->
+        <div class="card chart-card">
+            <h2 class="card__title">Distribuição</h2>
+            <div class="chart-wrapper">
+                <canvas baseChart [data]="chartData()" [options]="chartOptions" type="doughnut">
+                </canvas>
+            </div>
+            <!-- Custom Legend -->
+            <ul class="chart-legend" aria-label="Legenda do gráfico">
+                @for (cat of categories; track cat) {
+                <li class="chart-legend__item" (click)="onCategorySelected(cat)"
+                    [class.chart-legend__item--active]="selectedCategory() === cat">
+                    <span class="chart-legend__dot" [style.background]="categoryMeta[cat].color"></span>
+                    <span class="chart-legend__label">{{ categoryMeta[cat].label }}</span>
+                    <span class="chart-legend__value">{{ formatCurrency(categoryTotals()[cat] || 0) }}</span>
+                </li>
+                }
+            </ul>
+        </div>
+
+        <!-- Transaction List -->
+        <div class="card transactions-card">
+            <div class="card__header">
+                <h2 class="card__title">Transações</h2>
+                @if (selectedCategory()) {
+                <button class="btn-clear-filter" (click)="onCategorySelected(selectedCategory()!)"
+                    id="btn-clear-filter">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    Limpar filtro
+                </button>
+                }
+            </div>
+
+            <div class="transactions-list" role="list">
+                @if (filteredTransactions().length === 0 && !isLoading()) {
+                <div class="empty-state">
+                    <div class="empty-state__icon">💸</div>
+                    <p>Nenhuma transação encontrada</p>
+                    <span>Clique no "+" para adicionar uma</span>
+                </div>
+                }
+                @for (tx of filteredTransactions(); track trackById($index, tx)) {
+                <app-transaction-item [transaction]="tx" role="listitem" (edit)="openEdit($event)"
+                    (delete)="requestDelete($event.id)" />
+                }
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+<!-- ── 3. FAB (Floating Action Button) ──────────────────────────── -->
+<button class="fab" [class.fab--open]="isModalOpen()" (click)="openModal('EXPENSE')" id="btn-fab-open"
+    aria-label="Adicionar despesa">
+    <svg class="fab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+</button>
+
+<!-- ── 4. MODAL ──────────────────────────────────────────────────── -->
+@if (isModalOpen()) {
+<div class="modal-overlay" [@overlayFade] (click)="closeModal()" role="dialog" aria-modal="true"
+    aria-label="Nova Transação">
+    <div class="modal-container" [@fadeSlideUp] (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2 class="modal-title">{{ editingTransaction() ? 'Editar Transação' : (transactionTypeToCreate() ===
+                'INCOME' ? 'Recebi Dinheiro' : 'Nova Despesa') }}</h2>
+            <button class="btn-icon btn-close" (click)="closeModal()" id="btn-modal-close" aria-label="Fechar modal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+        </div>
+        @if (isModalOpen()) {
+        <app-transaction-form [transaction]="editingTransaction()" [defaultType]="transactionTypeToCreate()"
+            (transactionSaved)="onTransactionSaved($event)" (cancelled)="closeModal()" />
+        }
+    </div>
+</div>
+}
+
+<!-- ═══ MODAL: Confirm Delete ═══ -->
+@if (confirmDeleteId()) {
+<div class="modal-overlay" [@overlayFade] (click)="cancelDelete()" role="dialog" aria-modal="true">
+    <div class="modal-container p-6 w-full max-w-sm text-center relative z-10 bg-white" [@fadeSlideUp]
+        (click)="$event.stopPropagation()">
+        <div class="text-4xl mb-3">🗑️</div>
+        <h3 class="text-lg font-semibold text-slate-800 mb-2">Excluir transação?</h3>
+        <p class="text-sm text-slate-500 mb-6">Esta ação não pode ser desfeita.</p>
+        <div class="flex gap-3">
+            <button id="btn-cancel-delete" (click)="cancelDelete()"
+                class="px-4 py-2 border rounded-xl font-medium text-slate-600 hover:bg-slate-50 transition flex-1">Cancelar</button>
+            <button id="btn-confirm-delete" (click)="confirmDelete()"
+                class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition flex-1"
+                [disabled]="isSaving()">
+                @if (isSaving()) { Excluindo... } @else { Excluir }
+            </button>
+        </div>
+    </div>
+</div>
+}

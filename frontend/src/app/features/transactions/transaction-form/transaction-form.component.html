@@ -1,0 +1,124 @@
+<div class="card p-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-semibold text-slate-800">
+            {{ isEditMode() ? 'Editar Transação' : 'Nova Transação' }}
+        </h2>
+        <button id="btn-close-form" type="button" (click)="onCancel()"
+            class="text-slate-500 hover:text-slate-700 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Error -->
+    @if (errorMsg()) {
+    <div
+        class="flex items-center gap-2 bg-red-900/30 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-5 animate-fade-in">
+        <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-4.75a.75.75 0 001.5 0V10a.75.75 0 00-1.5 0v3.25zm.75-6.5a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                clip-rule="evenodd" />
+        </svg>
+        {{ errorMsg() }}
+    </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" id="transaction-form" novalidate>
+        <div class="space-y-4">
+            <!-- Description -->
+            <div>
+                <label class="label" for="tx-description">Descrição</label>
+                <input id="tx-description" type="text" formControlName="description" class="input-field"
+                    placeholder="Ex: Spotify, Supermercado..." />
+                @if (descriptionCtrl?.touched && descriptionCtrl?.invalid) {
+                <p class="text-red-400 text-xs mt-1">Descrição é obrigatória (mínimo 2 caracteres).</p>
+                }
+            </div>
+
+            <!-- Amount + Date side by side -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="label" for="tx-amount">Valor (R$)</label>
+                    <input id="tx-amount" type="number" formControlName="amount" class="input-field" placeholder="0,00"
+                        min="0.01" step="0.01" />
+                    @if (amountCtrl?.touched && amountCtrl?.invalid) {
+                    <p class="text-red-400 text-xs mt-1">Valor inválido.</p>
+                    }
+                </div>
+                <div>
+                    <label class="label" for="tx-date">Data</label>
+                    <input id="tx-date" type="date" formControlName="transactionDate" class="input-field" />
+                    @if (transactionDateCtrl?.touched && transactionDateCtrl?.invalid) {
+                    <p class="text-red-400 text-xs mt-1">Data é obrigatória.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div>
+                <label class="label" for="tx-category">Categoria</label>
+                <select id="tx-category" formControlName="category" class="input-field">
+                    @for (cat of allCategories; track cat) {
+                    <option [value]="cat">{{ categoryLabels[cat] }}</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Is Recurrent toggle -->
+            <div class="flex items-center gap-3 py-1">
+                <button type="button" id="toggle-recurrent" role="switch"
+                    [attr.aria-checked]="form.get('isRecurrent')?.value"
+                    (click)="form.get('isRecurrent')!.setValue(!form.get('isRecurrent')!.value)"
+                    class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent
+                 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface"
+                    [class]="form.get('isRecurrent')?.value ? 'bg-primary-600' : 'bg-surface-border'">
+                    <span
+                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                        [class]="form.get('isRecurrent')?.value ? 'translate-x-5' : 'translate-x-0'"></span>
+                </button>
+                <label class="text-sm font-medium text-slate-600 select-none">Transação recorrente</label>
+            </div>
+
+            <!-- Frequency — visível apenas quando isRecurrent = true -->
+            @if (showFrequency) {
+            <div class="animate-fade-in">
+                <label class="label" for="tx-frequency">Frequência</label>
+                <div class="flex gap-3">
+                    @for (freq of frequencies; track freq) {
+                    <label [for]="'freq-' + freq"
+                        class="flex-1 flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all duration-200"
+                        [class]="form.get('frequency')?.value === freq
+                  ? 'border-primary-500 bg-primary-600/10 text-primary-400'
+                  : 'border-surface-border bg-surface text-slate-500 hover:border-slate-400'">
+                        <input [id]="'freq-' + freq" type="radio" formControlName="frequency" [value]="freq"
+                            class="sr-only" />
+                        <span class="text-sm font-medium">{{ frequencyLabels[freq] }}</span>
+                    </label>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3 mt-6">
+            <button type="button" id="btn-cancel" (click)="onCancel()" class="btn-secondary flex-1">
+                Cancelar
+            </button>
+            <button type="submit" id="btn-save" class="btn-primary flex-1" [disabled]="isLoading()">
+                @if (isLoading()) {
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Salvando...
+                } @else {
+                {{ isEditMode() ? 'Salvar alterações' : 'Criar transação' }}
+                }
+            </button>
+        </div>
+    </form>
+</div>

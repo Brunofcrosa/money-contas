@@ -1,0 +1,101 @@
+.summary-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-fast);
+    outline: none;
+}
+
+.summary-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.summary-card:focus-visible {
+    box-shadow: 0 0 0 2px var(--cat-color);
+}
+
+.summary-card--selected {
+    border-color: var(--cat-color);
+    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-2) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.summary-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: var(--space-md);
+    transition: background var(--transition-fast);
+}
+
+.summary-card--selected .summary-card__icon {
+    background: var(--cat-color);
+}
+
+.summary-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.summary-card__name {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    transition: color var(--transition-fast);
+}
+
+.summary-card--selected .summary-card__name {
+    color: var(--color-text);
+}
+
+.summary-card__total {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.summary-card__count {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+}
+
+.summary-card__bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+}
+
+.summary-card__bar-fill {
+    height: 100%;
+    background: var(--cat-color);
+    width: 0;
+    transition: width 0.5s ease;
+}
+
+/* Left colored border applied dynamically to selected items */
+.summary-card--selected::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--cat-color);
+}

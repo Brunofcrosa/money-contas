@@ -1,0 +1,32 @@
+<button (click)="onSelect()"
+    class="group relative w-full text-left p-5 rounded-2xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer"
+    [class]="isActive()
+    ? 'bg-surface-hover border-' + colorMap[category()].replace('bg-','').replace('-500','-500/60') + ' shadow-lg'
+    : 'bg-surface-card border-surface-border hover:bg-surface-hover'">
+    <!-- Icon & Category label -->
+    <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+            <span class="text-xl">{{ iconMap[category()] }}</span>
+            <span class="text-xs font-semibold uppercase tracking-wider" [class]="textMap[category()]">
+                {{ labels[category()] }}
+            </span>
+        </div>
+        <span class="w-2.5 h-2.5 rounded-full opacity-80 group-hover:opacity-100 transition-opacity"
+            [class]="colorMap[category()]"></span>
+    </div>
+
+    <!-- Total -->
+    <p class="text-2xl font-bold text-slate-100 tracking-tight">
+        {{ formatCurrency(total()) }}
+    </p>
+
+    <!-- Count -->
+    <p class="text-xs text-slate-500 mt-1">
+        {{ count() }} {{ count() === 1 ? 'transação' : 'transações' }}
+    </p>
+
+    <!-- Active indicator bar -->
+    @if (isActive()) {
+    <div class="absolute bottom-0 left-4 right-4 h-0.5 rounded-full" [class]="colorMap[category()]"></div>
+    }
+</button>

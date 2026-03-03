@@ -1,0 +1,119 @@
+﻿npx : - Building...
+No linha:1 caractere:1
++ npx ng build > 
+build_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (- Buildin  
+  g...:String) [], RemoteEx   
+ ception
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+
+Initial chunk files   | Names                      |  Raw size | Estimated transfer size
+chunk-JRE26LQH.js     | -                          | 228.10 kB |                62.00 kB
+main-GFKYDNZT.js      | main                       |  59.33 kB |                16.13 kB
+polyfills-FFHMD2TL.js | polyfills                  |  33.71 kB |                11.02 kB
+styles-KLADSXN4.css   | styles                     |  14.12 kB |                 1.27 kB
+chunk-XAZLOLJU.js     | -                          |   3.96 kB |              1022 bytes
+
+                      | Initial total              | 339.21 kB |                91.42 kB
+
+Lazy chunk files      | Names                      |  Raw size | Estimated transfer size
+chunk-6BMWYTDS.js     | dashboard-component        | 251.38 kB |                72.99 kB
+chunk-UOGLGWYP.js     | -                          |  38.30 kB |                 7.94 kB
+chunk-FSHELF3J.js     | transaction-list-component |  23.76 kB |                 6.39 kB
+chunk-675ARETJ.js     | register-component         |   6.74 kB |                 2.39 kB
+chunk-677NDLN7.js     | login-component            |   5.97 kB |                 2.25 kB
+chunk-F4GWNZRA.js     | -                          |   1.52 kB |               668 bytes
+
+Application bundle generation failed. [8.969 seconds]
+
+Ôû▓ [WARNING] NG8102: The 
+left side of this nullish 
+coalescing operation does not 
+include 'null' or 'undefined' 
+in its type, therefore the 
+'??' operator can be safely 
+removed. [plugin 
+angular-compiler]
+
+    src/app/features/dashboard
+/dashboard.component.html:82:5
+6:
+      82 Ôöé ...ry]="cat" [tot
+al]="categoryTotals()[cat] ?? 
+0" [count]="getCate...
+         ÔòÁ                  
+     
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the 
+template of component 
+DashboardComponent.
+
+    src/app/features/dashboard
+/dashboard.component.ts:28:17:
+      28 Ôöé     templateUrl: 
+'./dashboard.component.html',
+         ÔòÁ                  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Ôû▓ [WARNING] NG8102: The 
+left side of this nullish 
+coalescing operation does not 
+include 'null' or 'undefined' 
+in its type, therefore the 
+'??' operator can be safely 
+removed. [plugin 
+angular-compiler]
+
+    src/app/features/dashboard
+/dashboard.component.html:105:
+72:
+      105 Ôöé ...d__value">{{ 
+formatCurrency(categoryTotals(
+)[cat] ?? 0) }}</span>
+          ÔòÁ                 
+               
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the 
+template of component 
+DashboardComponent.
+
+    src/app/features/dashboard
+/dashboard.component.ts:28:17:
+      28 Ôöé     templateUrl: 
+'./dashboard.component.html',
+         ÔòÁ                  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Ôû▓ [WARNING] src/app/features
+/dashboard/dashboard.component
+.css exceeded maximum budget. 
+Budget 2.00 kB was not met by 
+4.74 kB with a total of 6.74 
+kB.
+
+
+Ôû▓ [WARNING] src/app/shared/t
+ransaction-form/transaction-fo
+rm.component.css exceeded 
+maximum budget. Budget 2.00 
+kB was not met by 1.71 kB 
+with a total of 3.71 kB.
+
+
+X [ERROR] src/app/features/das
+hboard/dashboard.component.css
+ exceeded maximum budget. 
+Budget 4.00 kB was not met by 
+2.74 kB with a total of 6.74 
+kB.
+
+

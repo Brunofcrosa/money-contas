@@ -1,0 +1,109 @@
+<div class="min-h-screen bg-surface flex items-center justify-center px-4 py-12">
+    <!-- Background decoration -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-primary-600/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative w-full max-w-md animate-fade-in">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <div
+                class="inline-flex items-center justify-center w-16 h-16 bg-primary-600/20 border border-primary-600/30 rounded-2xl mb-4">
+                <span class="text-3xl">💰</span>
+            </div>
+            <h1 class="text-3xl font-bold text-gradient text-pink-500">Money Contas</h1>
+            <p class="text-slate-600 mt-2 text-sm">Crie sua conta gratuitamente</p>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-xl font-semibold text-slate-800 mb-6">Criar conta</h2>
+
+            @if (errorMsg()) {
+            <div
+                class="flex items-center gap-2 bg-red-900/30 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-5 animate-fade-in">
+                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-4.75a.75.75 0 001.5 0V10a.75.75 0 00-1.5 0v3.25zm.75-6.5a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                        clip-rule="evenodd" />
+                </svg>
+                {{ errorMsg() }}
+            </div>
+            }
+
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" id="register-form" novalidate>
+                <!-- Name -->
+                <div class="mb-4">
+                    <label class="label" for="reg-name">Nome completo</label>
+                    <input id="reg-name" type="text" formControlName="name" class="input-field" placeholder="Seu nome"
+                        autocomplete="name" />
+                    @if (nameCtrl?.touched && nameCtrl?.invalid) {
+                    <p class="text-red-400 text-xs mt-1">Nome deve ter ao menos 2 caracteres.</p>
+                    }
+                </div>
+
+                <!-- Email -->
+                <div class="mb-4">
+                    <label class="label" for="reg-email">E-mail</label>
+                    <input id="reg-email" type="email" formControlName="email" class="input-field"
+                        placeholder="seu@email.com" autocomplete="email" />
+                    @if (emailCtrl?.touched && emailCtrl?.invalid) {
+                    <p class="text-red-400 text-xs mt-1">E-mail inválido.</p>
+                    }
+                </div>
+
+                <!-- Password -->
+                <div class="mb-4">
+                    <label class="label" for="reg-password">Senha</label>
+                    <div class="relative">
+                        <input id="reg-password" [type]="showPass() ? 'text' : 'password'" formControlName="password"
+                            class="input-field pr-12" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+                        <button type="button" id="toggle-password-reg" (click)="togglePassword()"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                    @if (passwordCtrl?.touched && passwordCtrl?.invalid) {
+                    <p class="text-red-400 text-xs mt-1">Senha deve ter ao menos 6 caracteres.</p>
+                    }
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-6">
+                    <label class="label" for="reg-confirm">Confirmar senha</label>
+                    <input id="reg-confirm" [type]="showPass() ? 'text' : 'password'" formControlName="confirmPassword"
+                        class="input-field" placeholder="Repita a senha" autocomplete="new-password" />
+                    @if (confirmCtrl?.touched && form.errors?.['passwordMismatch']) {
+                    <p class="text-red-400 text-xs mt-1">As senhas não coincidem.</p>
+                    }
+                </div>
+
+                <button type="submit" id="btn-register" class="btn-primary w-full justify-center"
+                    [disabled]="isLoading()">
+                    @if (isLoading()) {
+                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Criando conta...
+                    } @else {
+                    Criar conta
+                    }
+                </button>
+            </form>
+
+            <p class="text-center text-sm text-slate-600 mt-6">
+                Já tem conta?
+                <a routerLink="/login" id="link-login"
+                    class="text-primary-600 hover:text-primary-500 font-medium transition-colors">
+                    Entrar
+                </a>
+            </p>
+        </div>
+    </div>
+</div>

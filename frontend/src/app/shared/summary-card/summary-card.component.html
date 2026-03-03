@@ -1,0 +1,16 @@
+<div class="summary-card" [class.summary-card--selected]="isSelected" [style.--cat-color]="meta.color"
+    [@cardSelect]="animState" (click)="onClick()" role="button" tabindex="0" [attr.aria-pressed]="isSelected"
+    (keydown.enter)="onClick()" (keydown.space)="onClick()">
+
+    <div class="summary-card__icon">{{ meta.icon }}</div>
+
+    <div class="summary-card__info">
+        <span class="summary-card__name">{{ meta.label }}</span>
+        <span class="summary-card__total">{{ formattedTotal }}</span>
+        <span class="summary-card__count">{{ count }} {{ count === 1 ? 'transação' : 'transações' }}</span>
+    </div>
+
+    <div class="summary-card__bar">
+        <div class="summary-card__bar-fill" [style.width]="total > 0 ? '100%' : '0%'"></div>
+    </div>
+</div>
