@@ -1,38 +1,26 @@
-# ==============================================================
-# .dockerignore — Front-end (frontend/)
-# ==============================================================
 
-# Node dependencies (re-installed inside Docker via npm ci)
 node_modules/
 
-# Angular build output (re-built inside Docker)
 dist/
 
-# Git
 .git
 .gitignore
 
-# IDE / editor
 .idea/
 .vscode/
 *.code-workspace
 
-# OS
 .DS_Store
 Thumbs.db
 
-# Docker files
 Dockerfile
-nginx.conf
 .dockerignore
 
-# Environment & secrets
 .env
 .env.*
 
-# Tests / coverage
 coverage/
 .nyc_output/
 
-# Documentation
 *.md
+

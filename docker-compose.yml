@@ -1,0 +1,79 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: money-contas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-money_contas}
+      POSTGRES_USER: ${DB_USER:-money_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_strong_password}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - money-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-money_user} -d ${DB_NAME:-money_contas}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: money-contas-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:${DB_PORT:-5432}/${DB_NAME:-money_contas}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-money_user}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-change_me_strong_password}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_FLYWAY_ENABLED: "true"
+      JWT_SECRET: ${JWT_SECRET:-change_me_base64_encoded_secret_at_least_256bits}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - money-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: money-contas-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - money-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  money-net:
+    driver: bridge
+

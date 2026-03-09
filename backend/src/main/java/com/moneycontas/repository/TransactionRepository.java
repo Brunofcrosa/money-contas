@@ -36,6 +36,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
         
         Optional<Transaction> findByIdAndUserId(UUID id, UUID userId);
 
+        boolean existsByUserIdAndTypeAndCategoryAndTransactionDateAndDescription(
+                        UUID userId,
+                        com.moneycontas.domain.enums.TransactionType type,
+                        Category category,
+                        java.time.LocalDate transactionDate,
+                        String description);
+
         
         long countByUserId(UUID userId);
 
@@ -50,6 +57,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
                         "FROM Transaction t WHERE t.user.id = :userId " +
                         "AND t.transactionDate <= CURRENT_DATE")
         BigDecimal calculateCurrentBalance(@Param("userId") UUID userId);
+
+        @Query("SELECT COALESCE(SUM(CASE WHEN t.type = 'INCOME' THEN t.amount ELSE -t.amount END), 0) " +
+                        "FROM Transaction t WHERE t.user.id = :userId " +
+                        "AND t.transactionDate <= :untilDate")
+        BigDecimal calculateBalanceUntilDate(@Param("userId") UUID userId,
+                        @Param("untilDate") java.time.LocalDate untilDate);
 
         @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.user.id = :userId " +
                         "AND t.type = :type AND t.transactionDate >= :startDate AND t.transactionDate <= :endDate")

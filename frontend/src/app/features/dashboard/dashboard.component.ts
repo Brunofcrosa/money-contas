@@ -58,6 +58,7 @@ export class DashboardComponent implements OnInit {
     readonly isLoading = signal<boolean>(false);
     readonly isModalOpen = signal<boolean>(false);
     readonly isSaving = signal<boolean>(false);
+    readonly isCarryingOver = signal<boolean>(false);
     readonly currentMonth = signal<Date>(new Date());
     readonly transactionTypeToCreate = signal<TransactionType>('EXPENSE');
 
@@ -72,6 +73,12 @@ export class DashboardComponent implements OnInit {
             ? this.transactions().filter(t => t.category === cat)
             : this.transactions();
     });
+    readonly expenseTransactions = computed(() =>
+        this.filteredTransactions().filter(t => t.type === 'EXPENSE')
+    );
+    readonly incomeTransactions = computed(() =>
+        this.filteredTransactions().filter(t => t.type === 'INCOME')
+    );
 
     readonly categoryTotals = computed(() =>
         this.transactions().reduce((acc, t) => {
@@ -160,6 +167,15 @@ export class DashboardComponent implements OnInit {
 
     readonly currentYear = computed(() => this.currentMonth().getFullYear());
     readonly currentMonthIndex = computed(() => this.currentMonth().getMonth());
+    readonly selectedMonthDefaultDate = computed(() => {
+        const month = this.currentMonth();
+        const today = new Date();
+        const sameMonth =
+            month.getFullYear() === today.getFullYear() &&
+            month.getMonth() === today.getMonth();
+        const day = sameMonth ? today.getDate() : 1;
+        return new Date(month.getFullYear(), month.getMonth(), day).toISOString().split('T')[0];
+    });
 
     readonly userInitial = computed(() => {
         const name = this.authService.currentUser()?.name ?? 'U';
@@ -185,8 +201,8 @@ export class DashboardComponent implements OnInit {
         this.isLoading.set(true);
         const y = this.currentMonth().getFullYear();
         const m = this.currentMonth().getMonth();
-        const start = new Date(y, m, 1).toLocaleDateString("en-CA"); 
-        const end = new Date(y, m + 1, 0).toLocaleDateString("en-CA");
+        const start = this.toIsoDate(new Date(y, m, 1));
+        const end = this.toIsoDate(new Date(y, m + 1, 0));
 
         forkJoin({
             txs: this.transactionService.getAll({ size: 200, startDate: start, endDate: end }),
@@ -237,6 +253,27 @@ export class DashboardComponent implements OnInit {
         this.transactionTypeToCreate.set(type);
         this.isModalOpen.set(true);
         document.body.style.overflow = 'hidden';
+    }
+
+    carryOverToNextMonth(): void {
+        if (this.isCarryingOver()) return;
+        const y = this.currentMonth().getFullYear();
+        const m = this.currentMonth().getMonth();
+        const start = this.toIsoDate(new Date(y, m, 1));
+        const end = this.toIsoDate(new Date(y, m + 1, 0));
+
+        this.isCarryingOver.set(true);
+        this.transactionService.carryOverToNextMonth(start, end).subscribe({
+            next: () => {
+                this.isCarryingOver.set(false);
+                this.loadTransactions();
+            },
+            error: (err) => {
+                this.isCarryingOver.set(false);
+                const message = err?.error?.message ?? 'Não foi possível guardar para o próximo mês.';
+                alert(message);
+            }
+        });
     }
 
     closeModal(): void {
@@ -296,4 +333,12 @@ export class DashboardComponent implements OnInit {
     trackById(_: number, item: Transaction): string {
         return item.id;
     }
+
+    private toIsoDate(date: Date): string {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 }
+

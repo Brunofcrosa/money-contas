@@ -1,4 +1,4 @@
-/* ── DASHBOARD LAYOUT ──────────────────────────────────────── */
+
 .dashboard {
     padding: calc(80px + var(--space-lg)) var(--space-lg) calc(100px) var(--space-lg);
     max-width: 1200px;
@@ -8,7 +8,6 @@
     gap: var(--space-xl);
 }
 
-/* ── HEADER FLUTUANTE ──────────────────────────────────────── */
 .header {
     position: fixed;
     top: 0;
@@ -16,7 +15,7 @@
     right: 0;
     height: 80px;
     background: rgba(255, 240, 245, 0.85);
-    /* LavenderBlush but translucent */
+    
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--color-border);
     display: flex;
@@ -85,7 +84,6 @@
     color: var(--color-text);
 }
 
-/* ── HERO SECTION ──────────────────────────────────────────── */
 .hero-card {
     position: relative;
     background: var(--gradient-hero);
@@ -128,6 +126,7 @@
     color: #FFF;
     line-height: 1;
     margin-bottom: var(--space-lg);
+    white-space: nowrap;
 }
 
 .hero-card__subinfo {
@@ -182,7 +181,6 @@
     pointer-events: none;
 }
 
-/* ── SECTIONS & CARDS ──────────────────────────────────────── */
 .section-title {
     font-size: 1.25rem;
     margin-bottom: var(--space-md);
@@ -224,7 +222,6 @@
     color: var(--color-text);
 }
 
-/* ── CHART ─────────────────────────────────────────────────── */
 .chart-card {
     min-height: 480px;
 }
@@ -290,7 +287,6 @@
     color: var(--color-text);
 }
 
-/* ── TRANSACTIONS LIST ─────────────────────────────────────── */
 .transactions-card {
     max-height: 520px;
 }
@@ -336,11 +332,10 @@
     filter: grayscale(1);
 }
 
-/* ── FAB ───────────────────────────────────────────────────── */
 .fab {
     position: fixed;
-    bottom: 32px;
-    right: 32px;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    right: calc(24px + env(safe-area-inset-right, 0px));
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -350,7 +345,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 90;
+    z-index: 950;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
 }
 
@@ -369,18 +364,18 @@
     transition: transform 0.3s ease;
 }
 
-/* ── MODAL ─────────────────────────────────────────────────── */
 .modal-overlay {
     position: fixed;
     inset: 0;
     background: rgba(255, 182, 193, 0.6);
-    /* More pinkish/lighter overlay */
+    
     backdrop-filter: blur(4px);
     z-index: 1000;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: var(--space-md);
+    overflow-y: auto;
 }
 
 .modal-container {
@@ -389,10 +384,11 @@
     border: 1px solid var(--color-border);
     width: 100%;
     max-width: 520px;
-    max-height: 90vh;
+    max-height: calc(100dvh - (var(--space-md) * 2));
     display: flex;
     flex-direction: column;
     box-shadow: 0 24px 60px rgba(255, 105, 180, 0.2);
+    overflow: hidden;
 }
 
 .modal-header {
@@ -417,7 +413,6 @@
     color: var(--color-text);
 }
 
-/* ── LOADING ───────────────────────────────────────────────── */
 .loading-bar {
     position: absolute;
     top: 80px;
@@ -447,7 +442,6 @@
     }
 }
 
-/* ── RESPONSIVE ────────────────────────────────────────────── */
 @media (max-width: 768px) {
     .hero-card__subinfo {
         flex-direction: column;
@@ -476,8 +470,8 @@
     }
 
     .fab {
-        bottom: 24px;
-        right: 24px;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        right: calc(16px + env(safe-area-inset-right, 0px));
         width: 52px;
         height: 52px;
     }
@@ -488,7 +482,7 @@
     }
 
     .dashboard {
-        padding: calc(70px + var(--space-md)) var(--space-md) calc(100px) var(--space-md);
+        padding: calc(70px + var(--space-md)) var(--space-md) calc(120px + env(safe-area-inset-bottom, 0px)) var(--space-md);
     }
 
     .header {
@@ -496,3 +490,4 @@
         padding: 0 var(--space-md);
     }
 }
+

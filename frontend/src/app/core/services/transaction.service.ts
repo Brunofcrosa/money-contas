@@ -48,6 +48,13 @@ export class TransactionService {
         return this.http.get<TransactionSummary>(`${this.baseUrl}/summary`, { params });
     }
 
+    carryOverToNextMonth(startDate: string, endDate: string): Observable<Transaction> {
+        const params = new HttpParams()
+            .set('startDate', startDate)
+            .set('endDate', endDate);
+        return this.http.post<Transaction>(`${this.baseUrl}/carry-over`, null, { params });
+    }
+
     create(data: CreateTransactionRequest): Observable<Transaction> {
         return this.http.post<Transaction>(this.baseUrl, data);
     }

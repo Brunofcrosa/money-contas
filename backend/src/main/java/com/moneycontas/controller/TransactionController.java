@@ -48,6 +48,20 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getSummary(currentUser, startDate, endDate));
     }
 
+    @PostMapping("/carry-over")
+    public ResponseEntity<?> carryOverToNextMonth(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate startDate,
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate endDate) {
+
+        try {
+            TransactionResponse response = transactionService.carryOverToNextMonth(currentUser, startDate, endDate);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", ex.getMessage()));
+        }
+    }
+
     
     @PostMapping
     public ResponseEntity<TransactionResponse> create(

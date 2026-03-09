@@ -28,6 +28,7 @@ import { TransactionService } from '../../core/services/transaction.service';
 export class TransactionFormComponent implements OnInit {
     @Input() transaction?: Transaction;
     @Input() defaultType: TransactionType = 'EXPENSE';
+    @Input() defaultDate?: string;
     @Output() transactionSaved = new EventEmitter<Transaction>();
     @Output() cancelled = new EventEmitter<void>();
 
@@ -50,7 +51,7 @@ export class TransactionFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const d = new Date().toISOString().split('T')[0];
+        const d = this.defaultDate ?? new Date().toISOString().split('T')[0];
         let type = 'SINGLE';
         if (this.transaction?.installmentsCount && this.transaction.installmentsCount > 1) {
             type = 'INSTALLMENT';
@@ -130,3 +131,4 @@ export class TransactionFormComponent implements OnInit {
         return !!(ctrl?.invalid && ctrl?.touched);
     }
 }
+

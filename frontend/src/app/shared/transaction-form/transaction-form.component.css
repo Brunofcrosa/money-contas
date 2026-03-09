@@ -1,9 +1,12 @@
-/* ── FORM CONTAINER ────────────────────────────────────────── */
+
 .form {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
     padding: var(--space-lg);
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100dvh - 180px);
 }
 
 .form-row {
@@ -12,7 +15,6 @@
     gap: var(--space-md);
 }
 
-/* ── FORM GROUPS ───────────────────────────────────────────── */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -25,7 +27,6 @@ label {
     color: var(--color-text-muted);
 }
 
-/* ── INPUTS & SELECTS ──────────────────────────────────────── */
 input,
 select {
     background: var(--color-surface-2);
@@ -68,7 +69,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
 }
 
-/* ── CUSTOM SELECT WITH INDICATOR ──────────────────────────── */
 .select-wrapper {
     position: relative;
     display: flex;
@@ -93,14 +93,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-size: 16px;
 }
 
-/* ── ERROR MESSAGES ────────────────────────────────────────── */
 .error-msg {
     color: #EF4444;
     font-size: 0.8rem;
     margin-top: 2px;
 }
 
-/* ── TOGGLE SWITCH (CSS PURO) ──────────────────────────────── */
 .toggle-group {
     display: flex;
     align-items: center;
@@ -160,12 +158,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     user-select: none;
 }
 
-/* ── FREQUENCY ─────────────────────────────────────────────── */
 .frequency-group {
     margin-top: var(--space-xs);
 }
 
-/* ── BUTTONS & ACTIONS ─────────────────────────────────────── */
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -173,6 +169,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: var(--space-lg);
     padding-top: var(--space-lg);
     border-top: 1px solid var(--color-border);
+    padding-bottom: var(--space-sm);
+}
+
+.launch-type-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-sm);
 }
 
 .btn {
@@ -214,7 +217,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
 }
 
-/* ── SPINNER (CSS PURO) ────────────────────────────────────── */
 .spinner {
     width: 20px;
     height: 20px;
@@ -230,9 +232,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     }
 }
 
-/* ── RESPONSIVE ────────────────────────────────────────────── */
 @media (max-width: 600px) {
     .form-row {
         grid-template-columns: 1fr;
     }
+
+    .form-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .btn {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .launch-type-options {
+        grid-template-columns: 1fr;
+    }
 }
+
